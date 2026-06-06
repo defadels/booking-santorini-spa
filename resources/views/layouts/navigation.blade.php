@@ -12,8 +12,20 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
+                        {{ __('Kelola Booking') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.therapists.index')" :active="request()->routeIs('admin.therapists.*')">
+                        {{ __('Manajemen Terapis') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.treatments.index')" :active="request()->routeIs('admin.treatments.*')">
+                        {{ __('Manajemen Treatment') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('home')" target="_blank" class="text-sky-600 hover:text-sky-800">
+                        {{ __('Lihat Website ↗') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -67,8 +79,20 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
+                {{ __('Kelola Booking') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.therapists.index')" :active="request()->routeIs('admin.therapists.*')">
+                {{ __('Manajemen Terapis') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.treatments.index')" :active="request()->routeIs('admin.treatments.*')">
+                {{ __('Manajemen Treatment') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('home')" target="_blank" class="text-sky-600">
+                {{ __('Lihat Website Utama ↗') }}
             </x-responsive-nav-link>
         </div>
 

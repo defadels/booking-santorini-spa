@@ -55,11 +55,9 @@
             <div class="flex items-center justify-between h-20">
                 <!-- Brand Logo -->
                 <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
-                    <!-- Elegant Aegean Blue Icon -->
-                    <div class="w-10 h-10 rounded-full bg-[#0D5C75] flex items-center justify-center text-white shadow-md shadow-[#0D5C75]/20 group-hover:scale-105 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
+                    <!-- Santorini Logo Image -->
+                    <div class="w-10 h-10 rounded-full overflow-hidden shadow-md shadow-[#0D5C75]/20 group-hover:scale-105 transition-transform duration-300">
+                        <img src="{{ asset('storage/image/logo.jpeg') }}" alt="Santorini Logo" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <span class="font-serif text-2xl font-bold tracking-wide text-[#0D5C75]">Santorini</span>

@@ -33,10 +33,8 @@
                 <div>
                     <!-- Logo / Brand Header -->
                     <div class="p-6 border-b border-[#0A475B] flex items-center space-x-3.5">
-                        <div class="w-10 h-10 rounded-full bg-white text-[#0D5C75] flex items-center justify-center shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                            </svg>
+                        <div class="w-10 h-10 rounded-full overflow-hidden shadow-md">
+                            <img src="{{ asset('storage/image/logo.jpeg') }}" alt="Santorini Logo" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <span class="font-serif text-xl font-bold tracking-wide block">Santorini</span>
@@ -123,7 +121,9 @@
             <!-- Mobile Navbar Header (Visible only on screens < md) -->
             <header class="bg-white border-b border-sky-100 h-16 flex items-center justify-between px-6 md:hidden">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-full bg-[#0D5C75] text-white flex items-center justify-center font-serif font-bold text-sm">S</div>
+                    <div class="w-8 h-8 rounded-full overflow-hidden">
+                        <img src="{{ asset('storage/image/logo.jpeg') }}" alt="Santorini Logo" class="w-full h-full object-cover">
+                    </div>
                     <span class="font-serif text-lg font-bold text-[#0D5C75]">Santorini</span>
                 </a>
                 

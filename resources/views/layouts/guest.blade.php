@@ -34,10 +34,8 @@
 
                 <!-- Top Logo -->
                 <a href="/" class="relative flex items-center space-x-3 group z-10">
-                    <div class="w-10 h-10 rounded-full bg-white text-[#0D5C75] flex items-center justify-center shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
+                    <div class="w-10 h-10 rounded-full overflow-hidden shadow-md bg-white">
+                        <img src="{{ asset('storage/image/logo.jpeg') }}" alt="Santorini Logo" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <span class="font-serif text-2xl font-bold tracking-wide">Santorini</span>
@@ -65,10 +63,8 @@
             <div class="lg:col-span-5 flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-12 bg-white relative">
                 <!-- Mobile header logo (shown only on mobile) -->
                 <div class="lg:hidden text-center mb-8 flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full bg-[#0D5C75] text-white flex items-center justify-center shadow-md mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
+                    <div class="w-12 h-12 rounded-full overflow-hidden shadow-md mb-2">
+                        <img src="{{ asset('storage/image/logo.jpeg') }}" alt="Santorini Logo" class="w-full h-full object-cover">
                     </div>
                     <span class="font-serif text-xl font-bold tracking-wide text-[#0D5C75]">Santorini Spa</span>
                     <span class="text-[9px] uppercase tracking-widest block font-semibold text-slate-400">Admin Portal</span>

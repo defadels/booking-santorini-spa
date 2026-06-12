@@ -80,7 +80,7 @@
                             type="text" 
                             id="customer_name" 
                             name="customer_name" 
-                            value="{{ old('customer_name') }}" 
+                            value="{{ old('customer_name', auth()->user()->name) }}" 
                             placeholder="Masukkan nama lengkap sesuai identitas..." 
                             required
                             class="w-full px-4 py-3 border border-slate-200 focus:border-[#0D5C75] focus:ring-2 focus:ring-[#0D5C75]/20 rounded-xl text-slate-800 text-sm focus:outline-none transition-all duration-300"

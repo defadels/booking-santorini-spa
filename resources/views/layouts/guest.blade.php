@@ -72,13 +72,8 @@
 
                 <!-- Form container wrapper -->
                 <div class="max-w-md w-full mx-auto space-y-6">
-                    <div>
-                        <h3 class="font-serif text-2xl font-bold text-slate-800">Masuk Akun Admin</h3>
-                        <p class="text-xs text-slate-400 mt-1">Silakan masukkan email dan password admin Anda</p>
-                    </div>
-
                     <!-- Main Auth Slots -->
-                    <div class="mt-8">
+                    <div class="mt-4">
                         {{ $slot }}
                     </div>
                 </div>

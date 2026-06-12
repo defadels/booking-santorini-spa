@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@santorinispa.com'],
             [
                 'name' => 'Admin Santorini',
+                'role' => 'admin',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]
@@ -154,12 +155,27 @@ class DatabaseSeeder extends Seeder
         $activeTherapists = array_values($activeTherapists);
 
         $customerNames = ['Budi Santoso', 'Siti Rahma', 'Aditya Pratama', 'Dewi Lestari', 'Rian Hidayat', 'Lina Marlina', 'Andi Wijaya', 'Sari Indah', 'Jessica Wong', 'Michael Tan'];
+        
+        $seededCustomers = [];
+        foreach ($customerNames as $name) {
+            $email = strtolower(str_replace(' ', '', $name)) . '@example.com';
+            $seededCustomers[] = User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'role' => 'customer',
+                    'password' => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
         $timeSlots = ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30'];
 
         for ($i = 0; $i < 25; $i++) {
             $treatment = $createdTreatments[array_rand($createdTreatments)];
             $therapist = $activeTherapists[array_rand($activeTherapists)];
-            $customerName = $customerNames[array_rand($customerNames)];
+            $customer = $seededCustomers[array_rand($seededCustomers)];
 
             $daysAgo = rand(0, 7);
             $bookingDate = Carbon::today()->subDays($daysAgo)->format('Y-m-d');
@@ -173,7 +189,8 @@ class DatabaseSeeder extends Seeder
 
             Booking::create([
                 'booking_code' => 'SANTO-'.strtoupper(Str::random(6)),
-                'customer_name' => $customerName,
+                'user_id' => $customer->id,
+                'customer_name' => $customer->name,
                 'treatment_id' => $treatment->id,
                 'therapist_id' => $therapist->id,
                 'booking_date' => $bookingDate,

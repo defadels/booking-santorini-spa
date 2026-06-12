@@ -143,6 +143,7 @@ class SpaController extends Controller
 
         $booking = Booking::create([
             'booking_code' => $bookingCode,
+            'user_id' => auth()->id(),
             'customer_name' => $request->customer_name,
             'treatment_id' => $treatment->id,
             'therapist_id' => $therapist->id,
@@ -167,6 +168,10 @@ class SpaController extends Controller
         $booking = Booking::with(['treatment', 'therapist'])
             ->where('booking_code', $booking_code)
             ->firstOrFail();
+
+        if ($booking->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk melihat booking ini.');
+        }
 
         return view('spa.confirmation', compact('booking'));
     }

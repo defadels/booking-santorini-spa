@@ -30,6 +30,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'role' => ['required', 'string', 'in:admin,customer'],
         ];
     }
 
@@ -47,6 +48,20 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+        $expectedRole = $this->input('role');
+
+        if ($user->role !== $expectedRole) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => $expectedRole === 'admin' 
+                    ? 'Akun Anda tidak memiliki hak akses Admin.' 
+                    : 'Akun Anda tidak terdaftar sebagai Pelanggan.',
             ]);
         }
 

@@ -8,6 +8,7 @@ class Booking extends Model
 {
     protected $fillable = [
         'booking_code',
+        'user_id',
         'customer_name',
         'treatment_id',
         'therapist_id',
@@ -17,6 +18,11 @@ class Booking extends Model
         'status',
         'total_price',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function treatment()
     {

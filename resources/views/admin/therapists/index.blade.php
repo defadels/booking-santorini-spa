@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ activeTherapist: null }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-12" x-data="{ activeTherapist: null, createOpen: false }">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 font-sans">
 
             <!-- Success notification -->
             @if(session('success'))
@@ -18,11 +18,40 @@
                 </div>
             @endif
 
+            <!-- Error notification -->
+            @if($errors->any())
+                <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl flex items-start shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-rose-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-xs font-semibold">
+                        <span class="block mb-1 text-slate-800">Mohon perbaiki kesalahan berikut:</span>
+                        <ul class="list-disc pl-4 space-y-0.5 text-rose-700">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             <!-- Therapist Table and Overview Card -->
             <div class="bg-white rounded-3xl border border-sky-100 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-sky-50">
-                    <h3 class="font-bold text-slate-800 text-base leading-snug">Daftar Terapis Santorini Spa</h3>
-                    <p class="text-xs text-slate-400 mt-1">Kelola data terapis profesional, spesialisasi, rating kepuasan, dan status operasional hari ini</p>
+                <div class="p-6 border-b border-sky-50 flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base leading-snug">Daftar Terapis Santorini Spa</h3>
+                        <p class="text-xs text-slate-400 mt-1">Kelola data terapis profesional, spesialisasi, rating kepuasan, dan status operasional hari ini</p>
+                    </div>
+                    <button 
+                        @click="createOpen = true" 
+                        type="button" 
+                        class="px-4 py-2.5 bg-[#0D5C75] text-white text-xs font-bold rounded-xl hover:bg-[#0A475B] transition-colors shadow-sm inline-flex items-center gap-1.5"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Terapis
+                    </button>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -71,20 +100,30 @@
                                         @endif
                                     </td>
                                     <td class="p-4 pr-6 text-center">
-                                        <button 
-                                            @click="activeTherapist = {
-                                                id: {{ $therapist->id }},
-                                                name: '{{ $therapist->name }}',
-                                                specialization: '{{ $therapist->specialization }}',
-                                                rating: '{{ $therapist->rating }}',
-                                                status: '{{ $therapist->status }}',
-                                                update_url: '{{ route('admin.therapists.update', $therapist->id) }}'
-                                            }"
-                                            type="button" 
-                                            class="px-3.5 py-1.5 bg-slate-50 text-slate-600 border border-slate-200 font-bold rounded-lg hover:bg-slate-100 transition-colors"
-                                        >
-                                            Edit
-                                        </button>
+                                        <div class="flex items-center justify-center gap-2">
+                                            <button 
+                                                @click="activeTherapist = {
+                                                    id: {{ $therapist->id }},
+                                                    name: '{{ $therapist->name }}',
+                                                    specialization: '{{ $therapist->specialization }}',
+                                                    rating: '{{ $therapist->rating }}',
+                                                    status: '{{ $therapist->status }}',
+                                                    image: '{{ $therapist->image }}',
+                                                    update_url: '{{ route('admin.therapists.update', $therapist->id) }}'
+                                                }"
+                                                type="button" 
+                                                class="px-3.5 py-1.5 bg-slate-50 text-slate-600 border border-slate-200 font-bold rounded-lg hover:bg-slate-100 transition-colors"
+                                            >
+                                                Edit
+                                            </button>
+                                            <form action="{{ route('admin.therapists.destroy', $therapist->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus terapis {{ $therapist->name }}? Semua data booking terkait terapis ini juga akan ikut terhapus!')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="px-3.5 py-1.5 bg-red-50 text-red-600 border border-red-200 font-bold rounded-lg hover:bg-red-100 transition-colors">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -126,9 +165,20 @@
                 </div>
 
                 <!-- Modal Body Form -->
-                <form :action="activeTherapist ? activeTherapist.update_url : ''" method="POST" class="p-6 space-y-4 text-xs">
+                <form :action="activeTherapist ? activeTherapist.update_url : ''" method="POST" enctype="multipart/form-data" class="p-6 space-y-4 text-xs">
                     @csrf
                     
+                    <!-- Current Image Preview -->
+                    <div class="flex items-center space-x-4 mb-2">
+                        <div class="w-12 h-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200 shadow-inner">
+                            <img :src="activeTherapist ? activeTherapist.image : ''" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Foto Saat Ini</span>
+                            <span class="text-[10px] text-slate-500 font-medium">Biarkan kosong jika tidak ingin mengubah foto</span>
+                        </div>
+                    </div>
+
                     <!-- Name -->
                     <div>
                         <label for="name" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Terapis</label>
@@ -186,9 +236,152 @@
                         </select>
                     </div>
 
+                    <!-- Photo File Upload -->
+                    <div>
+                        <label for="edit_image_file" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Upload File Foto Baru (Maks 2MB)</label>
+                        <input 
+                            type="file" 
+                            name="image_file" 
+                            id="edit_image_file" 
+                            class="w-full px-3 py-1.5 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                            accept="image/*"
+                        >
+                    </div>
+
+                    <!-- Photo URL -->
+                    <div>
+                        <label for="edit_image_url" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">ATAU Gunakan Link URL Foto Baru</label>
+                        <input 
+                            type="url" 
+                            name="image_url" 
+                            id="edit_image_url" 
+                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                            placeholder="https://images.unsplash.com/..."
+                        >
+                    </div>
+
                     <!-- Submit -->
                     <button type="submit" class="w-full py-3 bg-[#0D5C75] hover:bg-[#0A475B] text-white font-bold rounded-xl transition-all duration-200 shadow-sm text-center">
                         Simpan Perubahan
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Therapist Modal overlay -->
+        <div 
+            x-show="createOpen" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+            style="display: none;"
+            @keydown.escape.window="createOpen = false"
+        >
+            <div class="bg-white rounded-3xl max-w-md w-full border border-sky-100 shadow-xl overflow-hidden" @click.away="createOpen = false">
+                <!-- Modal Header -->
+                <div class="bg-[#0D5C75] p-6 text-white flex items-center justify-between">
+                    <div>
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-sky-200">Therapist management</span>
+                        <h3 class="font-serif text-lg font-bold mt-0.5">Tambah Terapis Baru</h3>
+                    </div>
+                    <button @click="createOpen = false" class="text-sky-200 hover:text-white transition-colors">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Body Form -->
+                <form action="{{ route('admin.therapists.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4 text-xs">
+                    @csrf
+                    
+                    <!-- Name -->
+                    <div>
+                        <label for="create_name" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Terapis</label>
+                        <input 
+                            type="text" 
+                            name="name" 
+                            id="create_name" 
+                            required
+                            placeholder="Contoh: Maria"
+                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                        >
+                    </div>
+
+                    <!-- Specialization -->
+                    <div>
+                        <label for="create_specialization" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Spesialisasi</label>
+                        <input 
+                            type="text" 
+                            name="specialization" 
+                            id="create_specialization" 
+                            required
+                            placeholder="Contoh: Balinese Massage, Facial"
+                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                        >
+                    </div>
+
+                    <!-- Rating -->
+                    <div>
+                        <label for="create_rating" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rating Awal (1.0 - 5.0)</label>
+                        <input 
+                            type="number" 
+                            name="rating" 
+                            id="create_rating" 
+                            step="0.1" 
+                            min="1" 
+                            max="5"
+                            value="5.0"
+                            required
+                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                        >
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label for="create_status" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Status Operasional</label>
+                        <select 
+                            name="status" 
+                            id="create_status" 
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0D5C75] text-xs text-slate-700 bg-white"
+                        >
+                            <option value="active" selected>Aktif (Bekerja)</option>
+                            <option value="holiday">Libur (Holiday)</option>
+                            <option value="inactive">Tidak Aktif (Inactive)</option>
+                        </select>
+                    </div>
+
+                    <!-- Photo File Upload -->
+                    <div>
+                        <label for="create_image_file" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Upload File Foto Terapis (Maks 2MB)</label>
+                        <input 
+                            type="file" 
+                            name="image_file" 
+                            id="create_image_file" 
+                            class="w-full px-3 py-1.5 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                            accept="image/*"
+                        >
+                    </div>
+
+                    <!-- Photo URL -->
+                    <div>
+                        <label for="create_image_url" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">ATAU Gunakan Link URL Foto (Unsplash, dll)</label>
+                        <input 
+                            type="url" 
+                            name="image_url" 
+                            id="create_image_url" 
+                            placeholder="https://images.unsplash.com/..."
+                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
+                        >
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="w-full py-3 bg-[#0D5C75] hover:bg-[#0A475B] text-white font-bold rounded-xl transition-all duration-200 shadow-sm text-center">
+                        Tambah Terapis
                     </button>
                 </form>
             </div>

@@ -46,7 +46,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Manajemen Terapis
     Route::get('/therapists', [AdminTherapistController::class, 'index'])->name('therapists.index');
+    Route::post('/therapists', [AdminTherapistController::class, 'store'])->name('therapists.store');
     Route::post('/therapists/{id}/update', [AdminTherapistController::class, 'update'])->name('therapists.update');
+    Route::delete('/therapists/{id}', [AdminTherapistController::class, 'destroy'])->name('therapists.destroy');
 
     // Manajemen Treatment
     Route::get('/treatments', [AdminTreatmentController::class, 'index'])->name('treatments.index');

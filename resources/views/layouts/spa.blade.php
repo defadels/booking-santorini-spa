@@ -66,11 +66,11 @@
                 </a>
 
                 <!-- Navigation Links -->
-                <nav class="hidden md:flex items-center space-x-8">
+                {{-- <nav class="hidden md:flex items-center space-x-8">
                     <a href="{{ route('home') }}" class="text-sm font-semibold hover:text-[#0D5C75] transition-colors {{ request()->routeIs('home') ? 'text-[#0D5C75]' : 'text-slate-600' }}">Beranda</a>
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-200"></span>
                     <span class="text-sm text-slate-500 font-medium">Layanan Premium</span>
-                </nav>
+                </nav> --}}
 
                 <!-- Navigation Access Points -->
                 <div class="flex items-center space-x-4">
@@ -137,7 +137,7 @@
                         <span class="font-serif text-2xl font-bold tracking-wide text-[#0D5C75]">Santorini Spa</span>
                     </div>
                     <p class="text-sm text-slate-500 leading-relaxed">
-                        Menghadirkan kesegaran laut Aegean dan keindahan putih Santorini langsung ke tubuh Anda melalui terapi penyembuhan holistik terbaik.
+                        Spoil Yourself is a Once Every While
                     </p>
                 </div>
 
@@ -146,10 +146,10 @@
                     <h3 class="text-sm uppercase tracking-widest font-bold text-[#C5A880]">Jam Operasional & Kontak</h3>
                     <ul class="text-sm space-y-2 text-slate-500">
                         <li class="flex items-center">
-                            <span class="font-semibold text-slate-600 mr-2">Setiap Hari:</span> 09:00 – 21:00 WIB
+                            <span class="font-semibold text-slate-600 mr-2">Setiap Hari:</span> 10.00 WIB - 19.00 WIB
                         </li>
                         <li class="flex items-center">
-                            <span class="font-semibold text-slate-600 mr-2">Telepon:</span> +62 (21) 500-SANTO
+                            <span class="font-semibold text-slate-600 mr-2">Telepon:</span> 0821 6662 1977
                         </li>
                         <li class="flex items-center">
                             <span class="font-semibold text-slate-600 mr-2">Email:</span> hello@santorinispa.com
@@ -161,8 +161,8 @@
                 <div class="space-y-4">
                     <h3 class="text-sm uppercase tracking-widest font-bold text-[#C5A880]">Alamat Oasis Kami</h3>
                     <p class="text-sm text-slate-500 leading-relaxed">
-                        Kawasan Resort Dago Pakar Hills Blok C-12,<br>
-                        Bandung, Jawa Barat, 40198
+                        Centre Point Ruko Business,<br>
+                        Blok M No 1
                     </p>
                 </div>
             </div>

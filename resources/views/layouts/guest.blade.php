@@ -49,7 +49,7 @@
                         Kelola Kemewahan & Kenyamanan Layanan
                     </h2>
                     <p class="mt-4 text-sm text-sky-100 font-light leading-relaxed">
-                        Selamat datang kembali di Portal Admin Santorini Spa. Kelola antrean booking, ketersediaan terapis, dan menu perawatan Anda dalam satu dashboard modern berkelas dunia.
+                        Selamat datang kembali di Portal Santorini Spa. Kelola antrean booking, ketersediaan terapis, dan menu perawatan Anda dalam satu dashboard modern berkelas dunia.
                     </p>
                 </div>
 

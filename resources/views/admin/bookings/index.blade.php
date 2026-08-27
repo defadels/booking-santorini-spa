@@ -100,8 +100,16 @@
                                             <span class="px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider bg-rose-50 text-rose-500 rounded-full border border-rose-200">Batal</span>
                                         @endif
                                     </td>
-                                    <td class="p-4 text-right font-bold text-slate-800">
-                                        Rp {{ number_format($booking->total_price, 0, ',', '.') }}
+                                    <td class="p-4 text-right">
+                                        @if($booking->voucher)
+                                            <span class="text-[10px] text-slate-400 line-through block font-normal">Rp {{ number_format($booking->original_price ?? ($booking->total_price + $booking->discount_amount), 0, ',', '.') }}</span>
+                                            <span class="text-xs font-bold text-[#0D5C75] block">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                            <span class="inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-bold px-1.5 py-0.5 rounded border border-emerald-100 mt-0.5">
+                                                -{{ $booking->voucher->discount_percent }}% {{ $booking->voucher->code }}
+                                            </span>
+                                        @else
+                                            <span class="font-bold text-slate-800 text-xs">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                        @endif
                                     </td>
                                     <td class="p-4 pr-6 text-center space-x-2 whitespace-nowrap">
                                         <!-- Confirm Button for Pending -->
@@ -128,6 +136,11 @@
                                                 time: '{{ substr($booking->booking_time, 0, 5) }}',
                                                 status: '{{ $booking->status }}',
                                                 price: '{{ number_format($booking->total_price, 0, ',', '.') }}',
+                                                original_price: '{{ $booking->original_price ? number_format($booking->original_price, 0, ',', '.') : '' }}',
+                                                discount_amount: '{{ $booking->discount_amount ? number_format($booking->discount_amount, 0, ',', '.') : '' }}',
+                                                voucher_code: '{{ $booking->voucher ? $booking->voucher->code : '' }}',
+                                                voucher_name: '{{ $booking->voucher ? addslashes($booking->voucher->name) : '' }}',
+                                                voucher_percent: '{{ $booking->voucher ? $booking->voucher->discount_percent : '' }}',
                                                 notes: '{{ $booking->notes ? addslashes($booking->notes) : '' }}',
                                                 update_url: '{{ route('admin.bookings.status', $booking->id) }}'
                                             }"
@@ -225,13 +238,42 @@
 
                     <!-- Selected Treatment details -->
                     <div>
-                        <span class="text-slate-400 block font-medium uppercase tracking-wider text-[10px] mb-2">Layanan yang Dipesan</span>
-                        <div class="bg-slate-50 p-4 rounded-xl space-y-2">
-                            <div class="flex justify-between items-baseline">
-                                <span class="font-bold text-slate-800" x-text="activeBooking ? activeBooking.treatment : ''"></span>
-                                <span class="font-bold text-slate-700" x-text="activeBooking ? 'Rp ' + activeBooking.price : ''"></span>
+                        <span class="text-slate-400 block font-medium uppercase tracking-wider text-[10px] mb-2">Layanan yang Dipesan & Rincian Biaya</span>
+                        <div class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-100">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="font-bold text-slate-800 text-sm block" x-text="activeBooking ? activeBooking.treatment : ''"></span>
+                                    <span class="text-[10px] text-slate-400 mt-0.5 block" x-text="activeBooking ? activeBooking.category + ' &bull; ' + activeBooking.duration + ' Menit' : ''"></span>
+                                </div>
+                                <span class="font-semibold text-xs" 
+                                      :class="activeBooking && activeBooking.voucher_code ? 'line-through text-slate-400' : 'text-slate-700'" 
+                                      x-text="activeBooking ? 'Rp ' + (activeBooking.original_price || activeBooking.price) : ''">
+                                </span>
                             </div>
-                            <span class="text-[10px] text-slate-400 block" x-text="activeBooking ? activeBooking.category + ' &bull; ' + activeBooking.duration + ' Menit' : ''"></span>
+
+                            <!-- Voucher Diskon Info (jika ada) -->
+                            <template x-if="activeBooking && activeBooking.voucher_code">
+                                <div class="pt-2.5 border-t border-slate-200/60">
+                                    <div class="flex justify-between items-center bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                            </svg>
+                                            <div>
+                                                <span class="font-mono font-extrabold text-emerald-800 tracking-wider" x-text="activeBooking.voucher_code"></span>
+                                                <span class="text-emerald-600 text-[10px] font-semibold ml-1" x-text="'(Diskon ' + activeBooking.voucher_percent + '%)'"></span>
+                                            </div>
+                                        </div>
+                                        <span class="font-bold text-emerald-700" x-text="'- Rp ' + activeBooking.discount_amount"></span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Total Final -->
+                            <div class="pt-2.5 border-t border-dashed border-slate-200 flex justify-between items-baseline">
+                                <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wide">Total Tagihan:</span>
+                                <span class="text-base font-extrabold text-[#0D5C75]" x-text="activeBooking ? 'Rp ' + activeBooking.price : ''"></span>
+                            </div>
                         </div>
                     </div>
 

@@ -83,9 +83,27 @@
                     <ul class="space-y-1.5">
                         <li><span class="text-slate-400 mr-1.5">Nama:</span> <span class="font-bold text-slate-700">{{ $booking->customer_name }}</span></li>
                         <li><span class="text-slate-400 mr-1.5">Status Booking:</span> 
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
-                                Pending Konfirmasi
-                            </span>
+                            @if($booking->status === 'pending')
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                                    Pending Konfirmasi
+                                </span>
+                            @elseif($booking->status === 'confirmed')
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Terkonfirmasi
+                                </span>
+                            @elseif($booking->status === 'completed')
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-50 text-[#0D5C75] border border-sky-200">
+                                    Selesai
+                                </span>
+                            @elseif($booking->status === 'cancelled')
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                                    Dibatalkan
+                                </span>
+                            @else
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-50 text-slate-700 border border-slate-200">
+                                    {{ ucfirst($booking->status) }}
+                                </span>
+                            @endif
                         </li>
                     </ul>
                 </div>

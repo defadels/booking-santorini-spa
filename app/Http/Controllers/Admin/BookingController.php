@@ -16,7 +16,7 @@ class BookingController extends Controller
         $status = $request->input('status', 'all');
         $search = $request->input('search');
 
-        $query = Booking::with(['treatment', 'therapist'])->orderBy('booking_date', 'desc')->orderBy('booking_time', 'desc');
+        $query = Booking::with(['treatment', 'therapist', 'voucher'])->orderBy('booking_date', 'desc')->orderBy('booking_time', 'desc');
 
         if ($status !== 'all') {
             $query->where('status', $status);

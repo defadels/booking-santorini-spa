@@ -220,56 +220,55 @@
                         >{{ old('notes') }}</textarea>
                     </div>
                 </div>
-            </div>
 
-            {{-- Voucher Diskon --}}
-            @if($vouchers->isNotEmpty())
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-sky-100 shadow-sm">
-                <div class="flex items-center space-x-3 mb-5">
-                    <span class="w-8 h-8 rounded-full bg-sky-50 text-[#0D5C75] flex items-center justify-center font-bold text-sm">5</span>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800">Voucher Diskon</h2>
-                        <p class="text-xs text-slate-400">Pilih 1 voucher untuk mendapatkan potongan harga.</p>
-                    </div>
-                </div>
-
-                @error('voucher_code')
-                    <div class="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">{{ $message }}</div>
-                @enderror
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    @foreach($vouchers as $v)
-                    <div
-                        @click="selectVoucher('{{ $v->code }}', '{{ $v->name }}', {{ $v->discount_percent }})"
-                        :class="selectedVoucherCode === '{{ $v->code }}'
-                            ? 'border-[#0D5C75] bg-sky-50 ring-2 ring-[#0D5C75]/20'
-                            : 'border-slate-200 hover:border-sky-300 bg-white'"
-                        class="relative cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200 flex items-center gap-4">
-
-                        {{-- Checkmark --}}
-                        <div :class="selectedVoucherCode === '{{ $v->code }}' ? 'bg-[#0D5C75] border-[#0D5C75]' : 'border-slate-300 bg-white'"
-                            class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all">
-                            <svg x-show="selectedVoucherCode === '{{ $v->code }}'" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {{-- 6. Voucher Diskon --}}
+                @if($vouchers->isNotEmpty())
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-sky-100 shadow-sm">
+                    <div class="flex items-center space-x-3 mb-5">
+                        <span class="w-8 h-8 rounded-full bg-sky-50 text-[#0D5C75] flex items-center justify-center font-bold text-sm flex-shrink-0">6</span>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Voucher Diskon</h2>
+                            <p class="text-xs text-slate-400">Pilih 1 voucher untuk mendapatkan potongan harga.</p>
                         </div>
+                    </div>
 
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-mono font-extrabold text-[#0D5C75] text-xs tracking-widest">{{ $v->code }}</span>
-                                <span class="bg-rose-100 text-rose-600 font-bold text-[10px] px-2 py-0.5 rounded-full">-{{ $v->discount_percent }}%</span>
+                    @error('voucher_code')
+                        <div class="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">{{ $message }}</div>
+                    @enderror
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        @foreach($vouchers as $v)
+                        <div
+                            @click="selectVoucher('{{ $v->code }}', '{{ $v->name }}', {{ $v->discount_percent }})"
+                            :class="selectedVoucherCode === '{{ $v->code }}'
+                                ? 'border-[#0D5C75] bg-sky-50 ring-2 ring-[#0D5C75]/20'
+                                : 'border-slate-200 hover:border-sky-300 bg-white'"
+                            class="cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200 flex items-center gap-3">
+
+                            {{-- Checkmark --}}
+                            <div :class="selectedVoucherCode === '{{ $v->code }}' ? 'bg-[#0D5C75] border-[#0D5C75]' : 'border-slate-300 bg-white'"
+                                class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all">
+                                <svg x-show="selectedVoucherCode === '{{ $v->code }}'" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             </div>
-                            <p class="text-xs text-slate-500 mt-0.5 truncate">{{ $v->name }}</p>
-                            <p class="text-[10px] text-slate-400 mt-0.5">Sisa kuota: {{ $v->getRemainingQuota() }}</p>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
 
-                {{-- Deselect indicator --}}
-                <p x-show="selectedVoucherCode" class="text-xs text-slate-400 mt-3 text-center">
-                    Klik voucher yang dipilih lagi untuk membatalkan pilihan.
-                </p>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="font-mono font-extrabold text-[#0D5C75] text-sm tracking-wider">{{ $v->code }}</span>
+                                    <span class="bg-rose-100 text-rose-600 font-bold text-[10px] px-2 py-0.5 rounded-full flex-shrink-0">-{{ $v->discount_percent }}%</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5 leading-snug">{{ $v->name }}</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold mt-1">Hemat Rp {{ number_format(round($treatment->price * $v->discount_percent / 100), 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <p x-show="selectedVoucherCode" x-transition class="text-xs text-slate-400 mt-4 text-center">
+                        Klik voucher yang sama lagi untuk membatalkan pilihan.
+                    </p>
+                </div>
+                @endif
             </div>
-            @endif
 
             <!-- Booking Summary Side (R: 4 Columns) -->
             <div class="lg:col-span-4 sticky top-24">

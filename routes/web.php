@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TherapistController as AdminTherapistController;
 use App\Http\Controllers\Admin\TreatmentController as AdminTreatmentController;
+use App\Http\Controllers\Admin\VoucherController as AdminVoucherController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpaController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/treatments', [AdminTreatmentController::class, 'index'])->name('treatments.index');
     Route::post('/treatments', [AdminTreatmentController::class, 'store'])->name('treatments.store');
     Route::post('/treatments/{id}/update', [AdminTreatmentController::class, 'update'])->name('treatments.update');
+
+    // Manajemen Voucher Diskon
+    Route::get('/vouchers', [AdminVoucherController::class, 'index'])->name('vouchers.index');
+    Route::post('/vouchers', [AdminVoucherController::class, 'store'])->name('vouchers.store');
+    Route::post('/vouchers/{id}/update', [AdminVoucherController::class, 'update'])->name('vouchers.update');
+    Route::delete('/vouchers/{id}', [AdminVoucherController::class, 'destroy'])->name('vouchers.destroy');
+    Route::get('/vouchers/{id}/usages', [AdminVoucherController::class, 'usages'])->name('vouchers.usages');
 });
 
 // Profile Management (Breeze default)

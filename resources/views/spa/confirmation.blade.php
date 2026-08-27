@@ -109,8 +109,29 @@
                             <span class="font-bold text-slate-800 text-sm block">{{ $booking->treatment->name }}</span>
                             <span class="text-slate-400 block mt-0.5">{{ $booking->treatment->category }} &bull; {{ $booking->treatment->duration }} Menit</span>
                         </div>
-                        <span class="font-bold text-slate-700 text-sm text-right">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                        {{-- Harga asli: dicoret jika ada voucher --}}
+                        @if($booking->voucher)
+                            <span class="font-semibold text-slate-400 text-sm text-right line-through">Rp {{ number_format($booking->original_price, 0, ',', '.') }}</span>
+                        @else
+                            <span class="font-bold text-slate-700 text-sm text-right">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                        @endif
                     </div>
+
+                    {{-- Baris Voucher (hanya jika ada) --}}
+                    @if($booking->voucher)
+                        <div class="flex justify-between items-center text-xs bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                </svg>
+                                <div>
+                                    <span class="font-extrabold text-emerald-700 font-mono tracking-widest">{{ $booking->voucher->code }}</span>
+                                    <span class="text-emerald-600 ml-1.5 font-semibold">— Diskon {{ $booking->voucher->discount_percent }}%</span>
+                                </div>
+                            </div>
+                            <span class="font-bold text-emerald-700">- Rp {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                        </div>
+                    @endif
 
                     @if($booking->notes)
                         <div class="border-t border-sky-100 pt-3 text-xs">

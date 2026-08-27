@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Therapist;
 use App\Models\Treatment;
+use App\Models\Voucher;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -27,6 +28,8 @@ class DashboardController extends Controller
         $activeTherapistsCount = Therapist::where('status', 'active')->count();
 
         $pendingBookingsCount = Booking::where('status', 'pending')->count();
+
+        $activeVouchersCount = Voucher::available()->count();
 
         // Recent bookings list (last 8)
         $recentBookings = Booking::with(['treatment', 'therapist'])
@@ -56,6 +59,7 @@ class DashboardController extends Controller
             'todayRevenue',
             'activeTherapistsCount',
             'pendingBookingsCount',
+            'activeVouchersCount',
             'recentBookings',
             'chartBookingsLabels',
             'chartBookingsData',

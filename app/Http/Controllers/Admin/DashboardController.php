@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $activeVouchersCount = Voucher::available()->count();
 
         // Recent bookings list (last 8)
-        $recentBookings = Booking::with(['treatment', 'therapist'])
+        $recentBookings = Booking::with(['treatment', 'therapist', 'voucher'])
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();

@@ -11,11 +11,26 @@
          selectedDateFormatted: '{{ $dates[0]['day_name'] }}, {{ $dates[0]['day'] }} {{ $dates[0]['month'] }}',
          selectedTime: '',
          bookings: {{ json_encode($existingBookings) }},
-         
+         selectedVoucherCode: '',
+         selectedVoucherName: '',
+         selectedVoucherPercent: 0,
+         basePrice: {{ $treatment->price }},
+         get discountAmount() { return Math.round(this.basePrice * this.selectedVoucherPercent / 100); },
+         get finalPrice() { return this.basePrice - this.discountAmount; },
+         selectVoucher(code, name, percent) {
+             if (this.selectedVoucherCode === code) {
+                 this.selectedVoucherCode = '';
+                 this.selectedVoucherName = '';
+                 this.selectedVoucherPercent = 0;
+             } else {
+                 this.selectedVoucherCode = code;
+                 this.selectedVoucherName = name;
+                 this.selectedVoucherPercent = percent;
+             }
+         },
          updateTherapist(id, name) {
              this.selectedTherapist = id;
              this.selectedTherapistName = name;
-             // Reset time selection if it is booked for the new therapist
              if (this.isSlotBooked(this.selectedTime)) {
                  this.selectedTime = '';
              }
@@ -23,7 +38,6 @@
          updateDate(value, formatted) {
              this.selectedDate = value;
              this.selectedDateFormatted = formatted;
-             // Reset time selection if it is booked for this date
              if (this.isSlotBooked(this.selectedTime)) {
                  this.selectedTime = '';
              }
@@ -31,6 +45,9 @@
          isSlotBooked(time) {
              if (!time) return false;
              return this.bookings.some(b => b.date === this.selectedDate && b.therapist_id == this.selectedTherapist && b.time === time);
+         },
+         formatRupiah(number) {
+             return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
          }
      }">
 
@@ -64,6 +81,7 @@
         <input type="hidden" name="therapist_id" :value="selectedTherapist">
         <input type="hidden" name="booking_date" :value="selectedDate">
         <input type="hidden" name="booking_time" :value="selectedTime">
+        <input type="hidden" name="voucher_code" :value="selectedVoucherCode">
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <!-- Form Input Side (L: 8 Columns) -->
@@ -204,6 +222,55 @@
                 </div>
             </div>
 
+            {{-- Voucher Diskon --}}
+            @if($vouchers->isNotEmpty())
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-sky-100 shadow-sm">
+                <div class="flex items-center space-x-3 mb-5">
+                    <span class="w-8 h-8 rounded-full bg-sky-50 text-[#0D5C75] flex items-center justify-center font-bold text-sm">5</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Voucher Diskon</h2>
+                        <p class="text-xs text-slate-400">Pilih 1 voucher untuk mendapatkan potongan harga.</p>
+                    </div>
+                </div>
+
+                @error('voucher_code')
+                    <div class="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">{{ $message }}</div>
+                @enderror
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    @foreach($vouchers as $v)
+                    <div
+                        @click="selectVoucher('{{ $v->code }}', '{{ $v->name }}', {{ $v->discount_percent }})"
+                        :class="selectedVoucherCode === '{{ $v->code }}'
+                            ? 'border-[#0D5C75] bg-sky-50 ring-2 ring-[#0D5C75]/20'
+                            : 'border-slate-200 hover:border-sky-300 bg-white'"
+                        class="relative cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200 flex items-center gap-4">
+
+                        {{-- Checkmark --}}
+                        <div :class="selectedVoucherCode === '{{ $v->code }}' ? 'bg-[#0D5C75] border-[#0D5C75]' : 'border-slate-300 bg-white'"
+                            class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all">
+                            <svg x-show="selectedVoucherCode === '{{ $v->code }}'" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-mono font-extrabold text-[#0D5C75] text-xs tracking-widest">{{ $v->code }}</span>
+                                <span class="bg-rose-100 text-rose-600 font-bold text-[10px] px-2 py-0.5 rounded-full">-{{ $v->discount_percent }}%</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5 truncate">{{ $v->name }}</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Sisa kuota: {{ $v->getRemainingQuota() }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                {{-- Deselect indicator --}}
+                <p x-show="selectedVoucherCode" class="text-xs text-slate-400 mt-3 text-center">
+                    Klik voucher yang dipilih lagi untuk membatalkan pilihan.
+                </p>
+            </div>
+            @endif
+
             <!-- Booking Summary Side (R: 4 Columns) -->
             <div class="lg:col-span-4 sticky top-24">
                 <div class="bg-white rounded-3xl border border-sky-100 shadow-sm overflow-hidden">
@@ -243,11 +310,25 @@
                         </div>
 
                         <!-- Price summary -->
-                        <div class="border-t-2 border-dashed border-sky-100 pt-6 flex justify-between items-baseline">
-                            <span class="text-sm font-bold text-slate-800">Total Biaya:</span>
-                            <span class="text-xl font-extrabold text-[#0D5C75]">
-                                Rp {{ number_format($treatment->price, 0, ',', '.') }}
-                            </span>
+                        <div class="border-t-2 border-dashed border-sky-100 pt-4 space-y-2">
+                            <!-- Harga asli -->
+                            <div class="flex justify-between items-baseline">
+                                <span class="text-xs text-slate-400">Harga Treatment:</span>
+                                <span class="text-xs font-semibold"
+                                    :class="selectedVoucherPercent > 0 ? 'line-through text-slate-400' : 'text-slate-800'">
+                                    Rp {{ number_format($treatment->price, 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <!-- Potongan diskon -->
+                            <div x-show="selectedVoucherPercent > 0" class="flex justify-between items-baseline">
+                                <span class="text-xs text-emerald-600 font-semibold" x-text="'Diskon ' + selectedVoucherPercent + '%:'"></span>
+                                <span class="text-xs text-emerald-600 font-bold" x-text="'- ' + formatRupiah(discountAmount)"></span>
+                            </div>
+                            <!-- Total -->
+                            <div class="flex justify-between items-baseline pt-2 border-t border-sky-100">
+                                <span class="text-sm font-bold text-slate-800">Total Biaya:</span>
+                                <span class="text-xl font-extrabold text-[#0D5C75]" x-text="formatRupiah(finalPrice)"></span>
+                            </div>
                         </div>
 
                         <!-- Submit Button -->

@@ -122,9 +122,20 @@
                                         <span class="text-xs text-slate-400">Jadwal:</span>
                                         <span class="text-xs font-bold text-slate-800 text-right">{{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') }} pukul {{ substr($booking->booking_time, 0, 5) }} WIB</span>
                                     </div>
-                                    <div class="flex justify-between">
+                                    <div class="flex justify-between items-start">
                                         <span class="text-xs text-slate-400">Total Biaya:</span>
-                                        <span class="text-xs font-extrabold text-[#0D5C75]">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                        <div class="text-right">
+                                            @if($booking->voucher)
+                                                <span class="text-[10px] text-slate-400 line-through block">Rp {{ number_format($booking->original_price, 0, ',', '.') }}</span>
+                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-100 mt-0.5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                                    -{{ $booking->voucher->discount_percent }}% {{ $booking->voucher->code }}
+                                                </span>
+                                                <span class="text-xs font-extrabold text-[#0D5C75] block mt-0.5">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                            @else
+                                                <span class="text-xs font-extrabold text-[#0D5C75]">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                            @endif
+                                        </div>
                                     </div>
                                     
                                     @if($booking->notes)

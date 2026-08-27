@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Therapist;
 use App\Models\Treatment;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -93,7 +94,10 @@ class SpaController extends Controller
                 ];
             });
 
-        return view('spa.booking', compact('treatment', 'therapists', 'dates', 'slots', 'existingBookings'));
+        // Voucher yang tersedia
+        $vouchers = Voucher::available()->orderBy('discount_percent', 'desc')->get();
+
+        return view('spa.booking', compact('treatment', 'therapists', 'dates', 'slots', 'existingBookings', 'vouchers'));
     }
 
     /**
@@ -139,20 +143,45 @@ class SpaController extends Controller
             ])->withInput();
         }
 
-        $bookingCode = 'SANTO-'.strtoupper(Str::random(6));
+        // Validasi voucher (opsional)
+        $voucher = null;
+        if ($request->filled('voucher_code')) {
+            $voucher = Voucher::where('code', strtoupper($request->voucher_code))->first();
+
+            if (!$voucher || !$voucher->isValid()) {
+                return back()->withErrors([
+                    'voucher_code' => 'Kode voucher tidak valid, sudah kadaluarsa, atau habis kuota.',
+                ])->withInput();
+            }
+        }
+
+        // Hitung harga
+        $originalPrice  = $treatment->price;
+        $discountAmount = $voucher ? round($originalPrice * ($voucher->discount_percent / 100)) : 0;
+        $finalPrice     = $originalPrice - $discountAmount;
+
+        $bookingCode = 'SANTO-' . strtoupper(Str::random(6));
 
         $booking = Booking::create([
-            'booking_code' => $bookingCode,
-            'user_id' => auth()->id(),
-            'customer_name' => $request->customer_name,
-            'treatment_id' => $treatment->id,
-            'therapist_id' => $therapist->id,
-            'booking_date' => $request->booking_date,
-            'booking_time' => $request->booking_time,
-            'notes' => $request->notes,
-            'status' => 'pending',
-            'total_price' => $treatment->price,
+            'booking_code'   => $bookingCode,
+            'user_id'        => auth()->id(),
+            'customer_name'  => $request->customer_name,
+            'treatment_id'   => $treatment->id,
+            'therapist_id'   => $therapist->id,
+            'booking_date'   => $request->booking_date,
+            'booking_time'   => $request->booking_time,
+            'notes'          => $request->notes,
+            'status'         => 'pending',
+            'total_price'    => $finalPrice,
+            'voucher_id'     => $voucher?->id,
+            'original_price' => $voucher ? $originalPrice : null,
+            'discount_amount'=> $discountAmount,
         ]);
+
+        // Tambah pemakaian voucher
+        if ($voucher) {
+            $voucher->increment('used_count');
+        }
 
         // Increment total booking counter for treatment
         $treatment->increment('total_bookings');
@@ -165,7 +194,7 @@ class SpaController extends Controller
      */
     public function confirmation($booking_code)
     {
-        $booking = Booking::with(['treatment', 'therapist'])
+        $booking = Booking::with(['treatment', 'therapist', 'voucher'])
             ->where('booking_code', $booking_code)
             ->firstOrFail();
 

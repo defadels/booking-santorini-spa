@@ -17,6 +17,9 @@ class Booking extends Model
         'notes',
         'status',
         'total_price',
+        'voucher_id',
+        'original_price',
+        'discount_amount',
     ];
 
     public function user()
@@ -32,5 +35,10 @@ class Booking extends Model
     public function therapist()
     {
         return $this->belongsTo(Therapist::class);
+    }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
     }
 }

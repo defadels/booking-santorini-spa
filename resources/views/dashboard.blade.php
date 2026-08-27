@@ -22,7 +22,7 @@
             @endif
 
             <!-- 1. Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
                 <!-- Today's Booking -->
                 <div class="bg-white p-6 rounded-3xl border border-sky-100 shadow-sm flex items-center justify-between">
                     <div class="space-y-1">
@@ -74,6 +74,19 @@
                         </svg>
                     </div>
                 </div>
+
+                <!-- Voucher Aktif -->
+                <a href="{{ route('admin.vouchers.index') }}" class="bg-white p-6 rounded-3xl border border-sky-100 shadow-sm flex items-center justify-between hover:shadow-md hover:border-emerald-200 transition-all duration-200 group">
+                    <div class="space-y-1">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Voucher Aktif</span>
+                        <span class="text-3xl font-extrabold text-slate-800 block">{{ $activeVouchersCount }}</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                    </div>
+                </a>
             </div>
 
             <!-- 2. Charts Section -->

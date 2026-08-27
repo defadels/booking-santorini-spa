@@ -15,7 +15,7 @@ class CustomerController extends Controller
     public function dashboard(Request $request)
     {
         $user = auth()->user();
-        $bookings = Booking::with(['treatment', 'therapist'])
+        $bookings = Booking::with(['treatment', 'therapist', 'voucher'])
             ->where('user_id', $user->id)
             ->orderBy('booking_date', 'desc')
             ->orderBy('booking_time', 'desc')

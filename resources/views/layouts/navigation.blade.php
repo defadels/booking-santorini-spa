@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('admin.treatments.index')" :active="request()->routeIs('admin.treatments.*')">
                         {{ __('Manajemen Treatment') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.vouchers.index')" :active="request()->routeIs('admin.vouchers.*')">
+                        {{ __('Voucher Diskon') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('home')" target="_blank" class="text-sky-600 hover:text-sky-800">
                         {{ __('Lihat Website ↗') }}
                     </x-nav-link>
@@ -90,6 +93,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.treatments.index')" :active="request()->routeIs('admin.treatments.*')">
                 {{ __('Manajemen Treatment') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.vouchers.index')" :active="request()->routeIs('admin.vouchers.*')">
+                {{ __('Voucher Diskon') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('home')" target="_blank" class="text-sky-600">
                 {{ __('Lihat Website Utama ↗') }}

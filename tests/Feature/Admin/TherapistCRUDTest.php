@@ -52,7 +52,6 @@ class TherapistCRUDTest extends TestCase
         $response = $this->actingAs($this->admin)->post(route('admin.therapists.store'), [
             'name' => 'Adelia',
             'specialization' => 'Shiatsu Massage',
-            'rating' => '4.7',
             'status' => 'active',
             'image_url' => 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80',
         ]);
@@ -63,7 +62,6 @@ class TherapistCRUDTest extends TestCase
         $this->assertDatabaseHas('therapists', [
             'name' => 'Adelia',
             'specialization' => 'Shiatsu Massage',
-            'rating' => 4.70,
             'status' => 'active',
             'image' => 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80',
         ]);
@@ -78,7 +76,6 @@ class TherapistCRUDTest extends TestCase
         $response = $this->actingAs($this->admin)->post(route('admin.therapists.store'), [
             'name' => 'Rina',
             'specialization' => 'Aromatherapy',
-            'rating' => '4.9',
             'status' => 'active',
             'image_file' => $file,
         ]);
@@ -93,7 +90,6 @@ class TherapistCRUDTest extends TestCase
         Storage::disk('public')->assertExists($therapist->getRawOriginal('image'));
 
         $this->assertEquals('Aromatherapy', $therapist->specialization);
-        $this->assertEquals(4.90, $therapist->rating);
         $this->assertEquals('active', $therapist->status);
     }
 
@@ -104,7 +100,6 @@ class TherapistCRUDTest extends TestCase
         $therapist = Therapist::create([
             'name' => 'Maya',
             'specialization' => 'Traditional Massage',
-            'rating' => 4.50,
             'status' => 'active',
             'image' => 'therapists/old_photo.jpg',
         ]);
@@ -117,7 +112,6 @@ class TherapistCRUDTest extends TestCase
         $response = $this->actingAs($this->admin)->post(route('admin.therapists.update', $therapist->id), [
             'name' => 'Maya Updated',
             'specialization' => 'Traditional Massage & Scrub',
-            'rating' => '4.8',
             'status' => 'holiday',
             'image_file' => $newFile,
         ]);
@@ -129,7 +123,6 @@ class TherapistCRUDTest extends TestCase
 
         $this->assertEquals('Maya Updated', $therapist->name);
         $this->assertEquals('Traditional Massage & Scrub', $therapist->specialization);
-        $this->assertEquals(4.80, $therapist->rating);
         $this->assertEquals('holiday', $therapist->status);
 
         // Assert old file deleted
@@ -145,7 +138,6 @@ class TherapistCRUDTest extends TestCase
         $therapist = Therapist::create([
             'name' => 'Budi',
             'specialization' => 'Deep Tissue',
-            'rating' => 4.60,
             'status' => 'active',
             'image' => 'therapists/budi.jpg',
         ]);

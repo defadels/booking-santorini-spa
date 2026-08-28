@@ -40,7 +40,7 @@
                 <div class="p-6 border-b border-sky-50 flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h3 class="font-bold text-slate-800 text-base leading-snug">Daftar Terapis Santorini Spa</h3>
-                        <p class="text-xs text-slate-400 mt-1">Kelola data terapis profesional, spesialisasi, rating kepuasan, dan status operasional hari ini</p>
+                        <p class="text-xs text-slate-400 mt-1">Kelola data terapis profesional, spesialisasi, dan status operasional hari ini</p>
                     </div>
                     <button 
                         @click="createOpen = true" 
@@ -61,7 +61,6 @@
                                 <th class="p-4 pl-6">Foto</th>
                                 <th class="p-4">Nama Terapis</th>
                                 <th class="p-4">Spesialisasi</th>
-                                <th class="p-4 text-center">Rating</th>
                                 <th class="p-4 text-center">Sesi Hari Ini</th>
                                 <th class="p-4 text-center">Status Operasional</th>
                                 <th class="p-4 text-center pr-6">Aksi</th>
@@ -77,14 +76,7 @@
                                     </td>
                                     <td class="p-4 font-bold text-slate-800 text-sm">{{ $therapist->name }}</td>
                                     <td class="p-4 text-slate-600 font-medium">{{ $therapist->specialization }}</td>
-                                    <td class="p-4 text-center">
-                                        <div class="inline-flex items-center text-amber-500 font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
-                                            <span class="text-slate-700 ml-1">{{ number_format($therapist->rating, 1) }}</span>
-                                        </div>
-                                    </td>
+
                                     <td class="p-4 text-center font-semibold text-slate-700">
                                         <span class="px-2 py-1 bg-sky-50 text-[#0D5C75] rounded-md border border-sky-100">
                                             {{ $therapist->sessions_today }} Sesi
@@ -106,7 +98,6 @@
                                                     id: {{ $therapist->id }},
                                                     name: '{{ $therapist->name }}',
                                                     specialization: '{{ $therapist->specialization }}',
-                                                    rating: '{{ $therapist->rating }}',
                                                     status: '{{ $therapist->status }}',
                                                     image: '{{ $therapist->image }}',
                                                     update_url: '{{ route('admin.therapists.update', $therapist->id) }}'
@@ -128,7 +119,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="p-8 text-center text-slate-400 font-medium">Data terapis belum ditambahkan.</td>
+                                    <td colspan="6" class="p-8 text-center text-slate-400 font-medium">Data terapis belum ditambahkan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -205,21 +196,7 @@
                         >
                     </div>
 
-                    <!-- Rating -->
-                    <div>
-                        <label for="rating" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rating (1.0 - 5.0)</label>
-                        <input 
-                            type="number" 
-                            name="rating" 
-                            id="rating" 
-                            step="0.1" 
-                            min="1" 
-                            max="5"
-                            required
-                            :value="activeTherapist ? activeTherapist.rating : ''"
-                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
-                        >
-                    </div>
+
 
                     <!-- Status -->
                     <div>
@@ -325,21 +302,7 @@
                         >
                     </div>
 
-                    <!-- Rating -->
-                    <div>
-                        <label for="create_rating" class="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rating Awal (1.0 - 5.0)</label>
-                        <input 
-                            type="number" 
-                            name="rating" 
-                            id="create_rating" 
-                            step="0.1" 
-                            min="1" 
-                            max="5"
-                            value="5.0"
-                            required
-                            class="w-full px-3 py-2 border border-slate-200 focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] rounded-xl text-xs text-slate-700 bg-white"
-                        >
-                    </div>
+
 
                     <!-- Status -->
                     <div>

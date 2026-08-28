@@ -34,16 +34,12 @@ class TherapistController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
-            'rating' => 'required|numeric|between:1.00,5.00',
             'status' => 'required|in:active,holiday,inactive',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_url' => 'nullable|url|max:500',
         ], [
             'name.required' => 'Nama terapis wajib diisi.',
             'specialization.required' => 'Spesialisasi terapis wajib diisi.',
-            'rating.required' => 'Rating terapis wajib diisi.',
-            'rating.numeric' => 'Rating terapis harus berupa angka.',
-            'rating.between' => 'Rating terapis harus di antara 1.00 dan 5.00.',
             'status.required' => 'Status terapis wajib dipilih.',
             'image_file.image' => 'File harus berupa gambar.',
             'image_file.max' => 'Ukuran file gambar tidak boleh melebihi 2MB.',
@@ -61,7 +57,6 @@ class TherapistController extends Controller
         Therapist::create([
             'name' => $request->name,
             'specialization' => $request->specialization,
-            'rating' => $request->rating,
             'status' => $request->status,
             'image' => $imagePath,
         ]);
@@ -77,16 +72,12 @@ class TherapistController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
-            'rating' => 'required|numeric|between:1.00,5.00',
             'status' => 'required|in:active,holiday,inactive',
             'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'image_url' => 'nullable|url|max:500',
         ], [
             'name.required' => 'Nama terapis wajib diisi.',
             'specialization.required' => 'Spesialisasi terapis wajib diisi.',
-            'rating.required' => 'Rating terapis wajib diisi.',
-            'rating.numeric' => 'Rating terapis harus berupa angka.',
-            'rating.between' => 'Rating terapis harus di antara 1.00 dan 5.00.',
             'status.required' => 'Status terapis wajib dipilih.',
             'image_file.image' => 'File harus berupa gambar.',
             'image_file.max' => 'Ukuran file gambar tidak boleh melebihi 2MB.',
@@ -113,7 +104,6 @@ class TherapistController extends Controller
         $therapist->update([
             'name' => $request->name,
             'specialization' => $request->specialization,
-            'rating' => $request->rating,
             'status' => $request->status,
             'image' => $imagePath,
         ]);

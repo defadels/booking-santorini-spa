@@ -10,7 +10,6 @@ class Therapist extends Model
     protected $fillable = [
         'name',
         'specialization',
-        'rating',
         'status',
         'image',
     ];
